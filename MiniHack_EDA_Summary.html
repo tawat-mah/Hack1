@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แนวคิด EDA & Data Science — MiniHack 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:    #0A1628;
+  --blue:    #1565C0;
+  --cyan:    #00B4D8;
+  --green:   #00C896;
+  --orange:  #FF8C42;
+  --red:     #FF4D6D;
+  --yellow:  #FFD166;
+  --bg:      #0D1F35;
+  --card:    #132338;
+  --border:  #1E3A5F;
+  --text:    #E2EAF4;
+  --muted:   #7A9CC4;
+  --mono:    'JetBrains Mono', monospace;
+  --thai:    'Noto Sans Thai', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--thai);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, #0A1628 0%, #0D2545 50%, #0A1628 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 56px 48px 40px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(0,180,216,0.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 20% 80%, rgba(0,200,150,0.05) 0%, transparent 50%);
+}
+.hero-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--cyan);
+  border: 1px solid var(--cyan);
+  border-radius: 20px;
+  padding: 3px 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.hero h1 {
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1.2;
+  background: linear-gradient(135deg, #E2EAF4 30%, #00B4D8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+}
+.hero-sub { font-size: 15px; color: var(--muted); }
+.hero-meta {
+  display: flex; gap: 24px; margin-top: 24px; flex-wrap: wrap;
+}
+.meta-chip {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--muted);
+  font-family: var(--mono);
+}
+.meta-chip .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+}
+
+/* ── LAYOUT ── */
+.container { max-width: 1100px; margin: 0 auto; padding: 0 32px 80px; }
+.section { margin-top: 64px; }
+
+.section-header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 28px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.section-num {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--cyan);
+  background: rgba(0,180,216,0.1);
+  border: 1px solid rgba(0,180,216,0.3);
+  border-radius: 6px;
+  padding: 4px 10px;
+  letter-spacing: 1px;
+}
+.section-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* ── CONCEPT CARD ── */
+.concept-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+.concept-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  position: relative;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.concept-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--cyan);
+}
+.concept-card .accent-bar {
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  border-radius: 14px 0 0 14px;
+}
+.card-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+  line-height: 1.3;
+}
+
+/* ── PROBLEM/SOLUTION ROWS ── */
+.ps-row {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 28px;
+  margin-bottom: 16px;
+}
+.ps-number {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.ps-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 18px;
+}
+.ps-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+@media(max-width:768px) { .ps-cols { grid-template-columns: 1fr; } }
+.ps-col {
+  background: rgba(0,0,0,0.2);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.ps-col-label {
+  font-size: 10px;
+  font-family: var(--mono);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.ps-col-body {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+.ps-col-body strong { color: var(--text); font-weight: 600; }
+
+.label-problem  { color: var(--red); }
+.label-solution { color: var(--green); }
+.label-reason   { color: var(--yellow); }
+
+/* ── TAG ── */
+.tag {
+  display: inline-block;
+  font-size: 10px;
+  font-family: var(--mono);
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin: 2px 2px 2px 0;
+  letter-spacing: 0.5px;
+}
+.tag-blue   { background: rgba(21,101,192,0.2); color: #64B5F6; border: 1px solid rgba(21,101,192,0.4); }
+.tag-green  { background: rgba(0,200,150,0.12); color: #00C896; border: 1px solid rgba(0,200,150,0.3); }
+.tag-red    { background: rgba(255,77,109,0.12); color: #FF8FA3; border: 1px solid rgba(255,77,109,0.3); }
+.tag-orange { background: rgba(255,140,66,0.12); color: #FFB347; border: 1px solid rgba(255,140,66,0.3); }
+.tag-yellow { background: rgba(255,209,102,0.12); color: #FFD166; border: 1px solid rgba(255,209,102,0.3); }
+
+/* ── PIPELINE ── */
+.pipeline {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+.pipe-step {
+  background: rgba(0,180,216,0.08);
+  border: 1px solid rgba(0,180,216,0.25);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-family: var(--mono);
+  color: var(--cyan);
+  white-space: nowrap;
+}
+.pipe-arrow {
+  color: var(--border);
+  font-size: 18px;
+  padding: 0 8px;
+  flex-shrink: 0;
+}
+
+/* ── PRINCIPLE BOX ── */
+.principle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.principle {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+}
+.principle .icon { font-size: 28px; margin-bottom: 10px; }
+.principle .ptitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.principle .pbody {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ── INSIGHT BOX ── */
+.insight-box {
+  background: linear-gradient(135deg, rgba(0,180,216,0.06), rgba(0,200,150,0.04));
+  border: 1px solid rgba(0,180,216,0.2);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-top: 16px;
+}
+.insight-box .label {
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--cyan);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.insight-box p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.insight-box p strong { color: var(--text); }
+
+/* ── TABLE ── */
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th {
+  background: rgba(0,180,216,0.08);
+  color: var(--cyan);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(30,58,95,0.5);
+  color: var(--muted);
+  vertical-align: top;
+}
+td strong { color: var(--text); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(0,180,216,0.03); }
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  padding: 40px;
+  border-top: 1px solid var(--border);
+  margin-top: 80px;
+  font-size: 12px;
+  color: var(--muted);
+  font-family: var(--mono);
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">Data Science Concepts</div>
+  <h1>แนวคิด EDA & Data Science<br>จาก MiniHack 1</h1>
+  <p class="hero-sub">ชุดข้อมูลการนำเข้า–ส่งออกสินค้าประมงของประเทศไทย ปี 2568</p>
+  <div class="hero-meta">
+    <span class="meta-chip"><span class="dot" style="background:#00C896"></span>42,057 Records</span>
+    <span class="meta-chip"><span class="dot" style="background:#00B4D8"></span>12 Columns</span>
+    <span class="meta-chip"><span class="dot" style="background:#FF8C42"></span>6 Sections</span>
+    <span class="meta-chip"><span class="dot" style="background:#FFD166"></span>11 Hypotheses</span>
+    <span class="meta-chip"><span class="dot" style="background:#FF4D6D"></span>10 Key Insights</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION A: DATA PIPELINE -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">PIPELINE</span>
+    <span class="section-title">กระบวนการวิเคราะห์ข้อมูล (End-to-End)</span>
+  </div>
+
+  <div class="pipeline">
+    <div class="pipe-step">1. Setup & Load</div>
+    <span class="pipe-arrow">→</span>
+    <div class="pipe-step">2. EDA</div>
+    <span class="pipe-arrow">→</span>
+    <div class="pipe-step">3. Data Cleaning</div>
+    <span class="pipe-arrow">→</span>
+    <div class="pipe-step">4. Analysis</div>
+    <span class="pipe-arrow">→</span>
+    <div class="pipe-step">5. Insights</div>
+    <span class="pipe-arrow">→</span>
+    <div class="pipe-step">6. Recommendations</div>
+  </div>
+
+  <div class="insight-box">
+    <div class="label">หลักการสำคัญ</div>
+    <p>กระบวนการนี้ <strong>ไม่ใช่เส้นตรง</strong> แต่เป็น <strong>วงจรวนซ้ำ (Iterative Loop)</strong> — เมื่อพบปัญหาใน Step ใดก็ต้องย้อนกลับไปแก้ก่อน แล้วค่อยเดินหน้า ไม่มี "ลัดขั้นตอน" ใน Data Science ที่ดี</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION B: PROBLEMS & SOLUTIONS -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">PART 01</span>
+    <span class="section-title">ปัญหาที่พบ → วิธีแก้ → เหตุผล</span>
+  </div>
+
+  <!-- P1 -->
+  <div class="ps-row">
+    <div class="ps-number">PROBLEM 01 / Data Loading</div>
+    <div class="ps-title">🔤 ภาษาไทยแสดงผลเป็น □□□ ใน Matplotlib</div>
+    <div class="ps-cols">
+      <div class="ps-col">
+        <div class="ps-col-label label-problem">⚠ ปัญหา</div>
+        <div class="ps-col-body">
+          Matplotlib ใช้ Font เริ่มต้น (DejaVu Sans) ที่<strong>ไม่มี Glyph ภาษาไทย</strong>
+          ทำให้อักขระไทยแสดงเป็น □ หรือ Warning:<br>
+          <em>"Glyph missing from font"</em>
+        </div>
+      </div>
+      <div class="ps-col">
+        <div class="ps-col-label label-solution">✓ วิธีแก้</div>
+        <div class="ps-col-body">
+          ดาวน์โหลด <strong>Sarabun Font</strong> จาก Google Fonts แล้ว Register เข้า Matplotlib ด้วย
+          <code>fm.fontManager.addfont()</code> และตั้งค่า
+          <code>matplotlib.rc('font', family='Sarabun')</code>
+        </div>
+      </div>
+      <div class="ps-col">
+        <div class="ps-col-label label-reason">★ ทำไมวิธีนี้?</div>
+        <div class="ps-col-body">
+          Sarabun เป็น <strong>Open Source Font</strong> ที่รองรับทั้งไทย-อังกฤษ และมีน้ำหนักหลายระดับ
+          ดาวน์โหลดได้ฟรีจาก GitHub Google Fonts และต้องรันทุกครั้งที่เปิด Colab ใหม่
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <span class="tag tag-red">Emoji ไม่รองรับ</span>
+      <span class="tag tag-blue">ต้องรันก่อน import plt</span>
+      <span class="tag tag-green">ใช้ข้อความแทน Emoji ใน annotation</span>
+    </div>
+  </div>
+
+  <!-- P2 -->
+  <div class="ps-row">
+    <div class="ps-number">PROBLEM 02 / Data Quality</div>
+    <div class="ps-title">🗑️ Garbage Data 38.8% ใน productDetailEN</div>
+    <div class="ps-cols">
+      <div class="ps-col">
+        <div class="ps-col-label label-problem">⚠ ปัญหา</div>
+        <div class="ps-col-body">
+          พบ Garbage 3 ประเภท:<br>
+          • <strong>#NAME?</strong> — Excel formula error<br>
+          • <strong>(blank)</strong> — Pivot Table ว่าง<br>
+          • <strong>- - - xxx</strong> — HS Code sub-level prefix<br>
+          รวม ~16,310 แถว (38.8%)
+        </div>
+      </div>
+      <div class="ps-col">
+        <div class="ps-col-label label-solution">✓ วิธีแก้</div>
+        <div class="ps-col-body">
+          <strong>วิเคราะห์สาเหตุก่อนลบ</strong>:<br>
+          • <strong>#NAME?</strong> → กู้จาก productDetailTH<br>
+          • <strong>(blank)</strong> → map HS Code จาก Reference<br>
+          • <strong>- - -</strong> → ตัด prefix ออก<br>
+          แล้วลบ productDetailEN ทิ้ง ใช้ TH เป็นหลัก
+        </div>
+      </div>
+      <div class="ps-col">
+        <div class="ps-col-label label-reason">★ ทำไมวิธีนี้?</div>
+        <div class="ps-col-body">
+          หลักการ <strong>"อย่าลบก่อนเข้าใจ"</strong> — Garbage แต่ละประเภทมีสาเหตุต่างกัน
+          การลบทันทีทำให้เสียข้อมูลที่ยังกู้คืนได้ การวิเคราะห์สาเหตุก่อนช่วยรักษาข้อมูลได้มากขึ้น
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <span class="tag tag-red">ETL Pipeline ต้องแก้</span>
+      <span class="tag tag-orange">วิเคราะห์ก่อนลบ</span>
+      <span class="tag tag-green">กู้คืนได้บางส่วน</span>
+      <span class="tag tag-blue">ใช้ TH เป็น Key หลัก</span>
+    </div>
+  </div>
+
+  <!-- P3 -->
+  <div class="ps-row">
+    <div class="ps-number">PROBLEM 03 / Data Consistency</div>
+    <div class="ps-title">🌍 countryID ของนามิเบียถูกอ่านเป็น NaN</div>
+    <div class="ps-cols">
+      <div class="ps-col">
+        <div class="ps-col-label label-problem">⚠ ปัญหา</div>
+        <div class="ps-col-body">
+          รหัส ISO ของนามิเบียคือ <strong>"NA"</strong> แต่ Pandas
+          อ่าน <strong>"NA"</strong> เป็น <strong>NaN</strong> โดยอัตโนมัติ
+          ทำให้รายงาน countryID Missing 25 แถว ทั้งที่ข้อมูลจริงครบ
+        </div>
+      </div>
+      <div class="ps-col">
+        <div class="ps-col-label label-solution">✓ วิธีแก้</div>
+        <div class="ps-col-body">
+          <strong>ไม่ต้อง reload ไฟล์</strong> แต่เติมค่ากลับเฉพาะจุด:<br>
+          <code>df.loc[df['countryNameTH']=='นามิเบีย', 'countryID'] = 'NA'</code><br>
+          กรองด้วย countryNameTH ก่อนเพื่อความปลอดภัย
+        </div>
+      </div>
+      <div class="ps-col">
+        <div class="ps-col-label label-reason">★ ทำไมวิธีนี้?</div>
+        <div class="ps-col-body">
+          แก้<strong>เฉพาะจุดที่ปัญหา</strong> ไม่กระทบข้อมูลอื่น
+          ถ้า reload ไฟล์ใหม่ด้วย <code>keep_default_na=False</code> จะทำให้
+          NaN จริงๆ ในคอลัมน์อื่นหายไปด้วย ซึ่งอันตรายกว่า
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <span class="tag tag-red">Pandas auto-convert NA→NaN</span>
+      <span class="tag tag-orange">Classic trap!</span>
+      <span class="tag tag-green">Surgical fix ดีกว่า reload</span>
+    </div>
+  </div>
+
+  <!-- P4 -->
+  <div class="ps-row">
+    <div class="ps-number">PROBLEM 04 / Schema Inconsistency</div>
+    <div class="ps-title">🔢 productDetailEN(204) ≠ productDetailTH(431)</div>
+    <div class="ps-cols">
+      <div class="ps-col">
+        <div class="ps-col-label label-problem">⚠ ปัญหา</div>
+        <div class="ps-col-body">
+          สินค้า 1 ชนิด (EN) มีชื่อไทยหลายแบบ เช่น
+          "ปลาทูน่า" / "ทูน่า" / "ปลาทู น่า"
+          ทำให้ <strong>Group By ผิดพลาด</strong> —
+          สินค้าเดียวกันแตกออกเป็นหลาย Group
+        </div>
+      </div>
+      <div class="ps-col">
+        <div class="ps-col-label label-solution">✓ วิธีแก้</div>
+        <div class="ps-col-body">
+          เลือก <strong>ชื่อ TH ที่ใช้บ่อยที่สุด</strong> (mode) ของแต่ละ EN
+          มาเป็น Canonical Name แล้ว Map กลับเข้า DataFrame
+          ก่อนลบ EN ทิ้ง เพื่อลด unique TH จาก 431 → ต่ำกว่า
+        </div>
+      </div>
+      <div class="ps-col">
+        <div class="ps-col-label label-reason">★ ทำไมวิธีนี้?</div>
+        <div class="ps-col-body">
+          ใช้ <strong>Majority Vote (mode)</strong> เพราะชื่อที่ใช้บ่อยที่สุด
+          มักเป็นชื่อมาตรฐานที่เจ้าของข้อมูลตั้งใจใช้
+          และหลีกเลี่ยง Bias จากการเลือกชื่อเอง
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <span class="tag tag-red">Dirty Master Data</span>
+      <span class="tag tag-orange">Mode-based Standardize</span>
+      <span class="tag tag-blue">ใช้ EN เป็น Join Key</span>
+      <span class="tag tag-green">TH สำหรับ Display</span>
+    </div>
+  </div>
+
+  <!-- P5 -->
+  <div class="ps-row">
+    <div class="ps-number">PROBLEM 05 / Column Management</div>
+    <div class="ps-title">📝 tradeflow เป็นตัวเลข (1/2) อ่านยาก</div>
+    <div class="ps-cols">
+      <div class="ps-col">
+        <div class="ps-col-label label-problem">⚠ ปัญหา</div>
+        <div class="ps-col-body">
+          <strong>tradeflow = 1 หรือ 2</strong> ไม่บอก Context
+          ต้องจำตลอดว่า 1=Import หรือ 2=Export
+          และ Data Dictionary ระบุสลับกับที่คาดไว้
+          (1=Import ไม่ใช่ Export)
+        </div>
+      </div>
+      <div class="ps-col">
+        <div class="ps-col-label label-solution">✓ วิธีแก้</div>
+        <div class="ps-col-body">
+          Map ตัวเลขเป็นข้อความ:<br>
+          <code>df['tradeflow'].map({1:'Import', 2:'Export'})</code><br>
+          แล้วแทนที่ค่าเดิมใน Column เดิม ไม่ต้องสร้าง Column ใหม่
+        </div>
+      </div>
+      <div class="ps-col">
+        <div class="ps-col-label label-reason">★ ทำไมวิธีนี้?</div>
+        <div class="ps-col-body">
+          <strong>Self-documenting Code</strong> — Code ที่อ่านแล้วเข้าใจได้เอง
+          ลด Human Error จากการจำตัวเลข
+          และทำให้ Visualization Label ถูกต้องอัตโนมัติโดยไม่ต้องแปลงซ้ำ
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <span class="tag tag-orange">อ่านไม่ออก Magic Number</span>
+      <span class="tag tag-green">Self-documenting</span>
+      <span class="tag tag-blue">Label ถูกอัตโนมัติ</span>
+    </div>
+  </div>
+
+  <!-- P6 -->
+  <div class="ps-row">
+    <div class="ps-number">PROBLEM 06 / Feature Engineering</div>
+    <div class="ps-title">📅 ไม่มี Column Quarter และ Season สำหรับ Seasonal Analysis</div>
+    <div class="ps-cols">
+      <div class="ps-col">
+        <div class="ps-col-label label-problem">⚠ ปัญหา</div>
+        <div class="ps-col-body">
+          ข้อมูลมีแค่ <strong>month (1-12)</strong> แต่ต้องการวิเคราะห์
+          ตาม Quarter (Q1-Q4) และ ฤดูกาลไทย (ร้อน/ฝน/หนาว)
+          ซึ่งสะท้อน Pattern การค้าได้ดีกว่าการดูรายเดือนแบบ Raw
+        </div>
+      </div>
+      <div class="ps-col">
+        <div class="ps-col-label label-solution">✓ วิธีแก้</div>
+        <div class="ps-col-body">
+          สร้าง <strong>2 Column ใหม่</strong> ด้วย <code>.map()</code>:<br>
+          • <strong>quarter</strong>: Q1-Q4 (3 เดือน/ไตรมาส)<br>
+          • <strong>season</strong>: ร้อน(มี.ค-พ.ค) / ฝน(มิ.ย-ต.ค) / หนาว(พ.ย-ก.พ)
+        </div>
+      </div>
+      <div class="ps-col">
+        <div class="ps-col-label label-reason">★ ทำไมวิธีนี้?</div>
+        <div class="ps-col-body">
+          <strong>Feature Engineering</strong> — สร้าง Feature ใหม่จากข้อมูลที่มี
+          เพื่อเพิ่ม Granularity ในการวิเคราะห์
+          ฤดูกาลไทยสัมพันธ์กับ <strong>ฤดูจับสัตว์น้ำ</strong> โดยตรง
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <span class="tag tag-blue">Feature Engineering</span>
+      <span class="tag tag-green">Domain Knowledge</span>
+      <span class="tag tag-yellow">ฤดูกาลไทย ≠ สากล</span>
+    </div>
+  </div>
+
+  <!-- P7 -->
+  <div class="ps-row">
+    <div class="ps-number">PROBLEM 07 / Missing Reference Data</div>
+    <div class="ps-title">📦 (blank) ใน productDetailTH ไม่รู้ว่าสินค้าอะไร</div>
+    <div class="ps-cols">
+      <div class="ps-col">
+        <div class="ps-col-label label-problem">⚠ ปัญหา</div>
+        <div class="ps-col-body">
+          พบ <strong>34 แถว</strong> ที่ productDetailTH = (blank)
+          ไม่รู้ชื่อสินค้า ทำให้วิเคราะห์แบบ Product-based ไม่ได้
+          แต่ยังมี <strong>heading11 (HS Code)</strong> เป็นตัวระบุ
+        </div>
+      </div>
+      <div class="ps-col">
+        <div class="ps-col-label label-solution">✓ วิธีแก้</div>
+        <div class="ps-col-body">
+          ค้น HS Code จาก <strong>แหล่งอ้างอิงภายนอก</strong> (กรมศุลกากร)
+          แล้ว Manual Fill:<br>
+          HS 3032900000 →
+          <strong>"ปลาแซลมอนชนิดอื่น แช่แข็ง ไม่รวมตับและไข่ปลา"</strong>
+        </div>
+      </div>
+      <div class="ps-col">
+        <div class="ps-col-label label-reason">★ ทำไมวิธีนี้?</div>
+        <div class="ps-col-body">
+          HS Code เป็น <strong>มาตรฐานสากล</strong> (World Customs Organization)
+          ใช้เป็น Foreign Key ในการ Lookup ชื่อสินค้าจาก Reference Table
+          วิธีนี้ถูกต้องกว่าการเดาหรือทิ้งข้อมูล
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <span class="tag tag-orange">Missing Master Data</span>
+      <span class="tag tag-blue">HS Code = Foreign Key</span>
+      <span class="tag tag-green">Manual + Verified Source</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION C: EDA PRINCIPLES -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">PART 02</span>
+    <span class="section-title">แนวทาง EDA ที่ดี — 10 หลักการ</span>
+  </div>
+
+  <div class="concept-grid">
+
+    <div class="concept-card">
+      <div class="accent-bar" style="background: var(--cyan)"></div>
+      <div class="card-num">PRINCIPLE 01</div>
+      <div class="card-title">🔍 Understand Before Delete<br>เข้าใจก่อนลบ</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.7">
+        ทุกแถวที่ดูเหมือน "ขยะ" มีสาเหตุ — Garbage ใน MiniHack 1 มี 3 ประเภทที่แก้ต่างกัน
+        การลบทันทีทำให้เสียข้อมูลที่กู้คืนได้ถึง ~10,000 แถว
+      </p>
+      <div style="margin-top:12px">
+        <span class="tag tag-red">อย่าลบทันที</span>
+        <span class="tag tag-green">วิเคราะห์สาเหตุก่อน</span>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <div class="accent-bar" style="background: var(--green)"></div>
+      <div class="card-num">PRINCIPLE 02</div>
+      <div class="card-title">💾 Always Backup Original<br>สำรองต้นฉบับเสมอ</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.7">
+        <code>df_raw = df.copy()</code> ก่อน Clean ทุกครั้ง
+        ถ้า Clean ผิดพลาดสามารถเริ่มใหม่จาก df_raw โดยไม่ต้อง reload ไฟล์
+      </p>
+      <div style="margin-top:12px">
+        <span class="tag tag-blue">df_raw = df.copy()</span>
+        <span class="tag tag-green">ห้ามแก้ไข df_raw</span>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <div class="accent-bar" style="background: var(--yellow)"></div>
+      <div class="card-num">PRINCIPLE 03</div>
+      <div class="card-title">📐 Cross-Validate Columns<br>ตรวจสอบข้ามคอลัมน์</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.7">
+        unique(countryID) ≠ unique(countryNameTH) → มีปัญหา
+        เมื่อ 2 คอลัมน์ที่ควรสอดคล้องกันมีค่า Unique ไม่เท่ากัน แสดงว่ามี Data Inconsistency
+      </p>
+      <div style="margin-top:12px">
+        <span class="tag tag-orange">Cross-column Validation</span>
+        <span class="tag tag-yellow">Uniqueness Check</span>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <div class="accent-bar" style="background: var(--orange)"></div>
+      <div class="card-num">PRINCIPLE 04</div>
+      <div class="card-title">🧪 Hypothesis-Driven EDA<br>ตั้งสมมติฐานก่อนวิเคราะห์</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.7">
+        ตั้ง Hypothesis 11 ข้อ ก่อนเข้า Section 4 แทนการวิเคราะห์แบบสุ่ม
+        ทำให้โฟกัสได้ตรงจุดและพิสูจน์/หักล้างสมมติฐานอย่างเป็นระบบ
+      </p>
+      <div style="margin-top:12px">
+        <span class="tag tag-blue">H1-H11</span>
+        <span class="tag tag-green">Structured Thinking</span>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <div class="accent-bar" style="background: var(--red)"></div>
+      <div class="card-num">PRINCIPLE 05</div>
+      <div class="card-title">🎯 Surgical Fix<br>แก้เฉพาะจุด ไม่กระทบส่วนอื่น</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.7">
+        กรณีนามิเบีย: ใช้ <code>.loc[condition, col]</code> แทนการ reload ทั้งไฟล์
+        หลักการ "Minimum Change for Maximum Impact" ลดความเสี่ยง Side Effect
+      </p>
+      <div style="margin-top:12px">
+        <span class="tag tag-green">.loc[] conditional update</span>
+        <span class="tag tag-orange">Minimal Side Effect</span>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <div class="accent-bar" style="background: #9B59B6"></div>
+      <div class="card-num">PRINCIPLE 06</div>
+      <div class="card-title">🏗️ Feature Engineering<br>สร้าง Feature จาก Domain Knowledge</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.7">
+        Quarter และ Season ไม่ได้อยู่ในข้อมูลต้นฉบับ แต่สร้างจาก month
+        โดยใช้ความรู้ Domain (ฤดูกาลประมงไทย) เป็น Feature Engineering ที่ตรงเป้า
+      </p>
+      <div style="margin-top:12px">
+        <span class="tag tag-yellow">Domain Knowledge</span>
+        <span class="tag tag-blue">Derived Feature</span>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <div class="accent-bar" style="background: var(--cyan)"></div>
+      <div class="card-num">PRINCIPLE 07</div>
+      <div class="card-title">📊 Describe Then Visualize<br>ตัวเลขก่อน แล้วค่อยกราฟ</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.7">
+        ดู <code>describe()</code> ก่อนเสมอ — max สูงกว่า mean มากแค่ไหน?
+        std เป็นสัดส่วนเท่าไร? แล้วค่อยวาดกราฟเพื่อยืนยัน Pattern ที่เห็นจากตัวเลข
+      </p>
+      <div style="margin-top:12px">
+        <span class="tag tag-blue">describe() first</span>
+        <span class="tag tag-green">Viz to confirm</span>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <div class="accent-bar" style="background: var(--green)"></div>
+      <div class="card-num">PRINCIPLE 08</div>
+      <div class="card-title">🔗 Use External Reference<br>ใช้แหล่งอ้างอิงภายนอก</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.7">
+        HS Code จาก WCO/กรมศุลกากรเป็นมาตรฐานสากล
+        ใช้เป็น Foreign Key Lookup เมื่อข้อมูลหาย
+        เพิ่มความแม่นยำมากกว่าการเดา
+      </p>
+      <div style="margin-top:12px">
+        <span class="tag tag-orange">HS Code Standard</span>
+        <span class="tag tag-green">Verified Source</span>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <div class="accent-bar" style="background: var(--yellow)"></div>
+      <div class="card-num">PRINCIPLE 09</div>
+      <div class="card-title">⚠️ Know Your Limitations<br>รู้ข้อจำกัดของข้อมูล</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.7">
+        ข้อมูล 1 ปี (2568) ไม่สามารถพิสูจน์ Seasonal Pattern ได้ 100%
+        การ Acknowledge Limitation เป็นสัญญาณของ Data Scientist ที่ดี
+        ไม่ใช่ความอ่อนแอ
+      </p>
+      <div style="margin-top:12px">
+        <span class="tag tag-yellow">1-Year Limitation</span>
+        <span class="tag tag-red">No YoY Trend</span>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <div class="accent-bar" style="background: var(--orange)"></div>
+      <div class="card-num">PRINCIPLE 10</div>
+      <div class="card-title">💡 Insight → Action<br>ทุก Insight ต้องนำไปสู่ Action</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.7">
+        EDA ที่ดีไม่จบแค่ "พบว่า..." แต่ต้องตอบว่า "ควรทำอะไร?"
+        ใน MiniHack 1 ทุก Insight มี Recommendation ที่ชัดเจน เร่งด่วน/ระยะกลาง/ระยะยาว
+      </p>
+      <div style="margin-top:12px">
+        <span class="tag tag-green">Actionable Insights</span>
+        <span class="tag tag-blue">Prioritized Recs</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION D: DATA QUALITY FRAMEWORK -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">PART 03</span>
+    <span class="section-title">Framework การตรวจสอบ Data Quality</span>
+  </div>
+
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+    <table>
+      <thead>
+        <tr>
+          <th>มิติ</th>
+          <th>คำถามที่ต้องถาม</th>
+          <th>เครื่องมือที่ใช้</th>
+          <th>พบใน MiniHack 1</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Completeness</strong></td>
+          <td>ข้อมูลครบทุกแถว/คอลัมน์ไหม?</td>
+          <td><code>.isnull().sum()</code></td>
+          <td>countryID missing 25 แถว (นามิเบีย)</td>
+        </tr>
+        <tr>
+          <td><strong>Validity</strong></td>
+          <td>ค่าอยู่ในช่วงที่ถูกต้องไหม?</td>
+          <td><code>price ≤ 0 check</code></td>
+          <td>price = 0 พบบางแถว</td>
+        </tr>
+        <tr>
+          <td><strong>Consistency</strong></td>
+          <td>ข้อมูลสอดคล้องกันข้ามคอลัมน์?</td>
+          <td><code>.nunique()</code> cross-check</td>
+          <td>EN(204) ≠ TH(431), countryID(196) ≠ TH(197)</td>
+        </tr>
+        <tr>
+          <td><strong>Accuracy</strong></td>
+          <td>ข้อมูลตรงกับความเป็นจริงไหม?</td>
+          <td>HS Code Reference Lookup</td>
+          <td>(blank) ใน TH → map จากกรมศุลกากร</td>
+        </tr>
+        <tr>
+          <td><strong>Uniqueness</strong></td>
+          <td>มีข้อมูลซ้ำซ้อนไหม?</td>
+          <td><code>.duplicated()</code></td>
+          <td>ชื่อ TH หลายแบบสำหรับสินค้าเดียว</td>
+        </tr>
+        <tr>
+          <td><strong>Timeliness</strong></td>
+          <td>ข้อมูลทันสมัยพอไหม?</td>
+          <td>ETL_DATE check</td>
+          <td>ETL_DATE มีค่าเดียว (12/3/2026 05:59)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION E: KEY INSIGHTS -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">PART 04</span>
+    <span class="section-title">Key Insights — สิ่งที่ค้นพบจากการวิเคราะห์</span>
+  </div>
+
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+    <table>
+      <thead>
+        <tr>
+          <th>รหัส</th>
+          <th>หมวด</th>
+          <th>Insight</th>
+          <th>Implication</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tag tag-green">IN-1</span></td>
+          <td>ภาพรวม</td>
+          <td><strong>ไทยเกินดุลการค้าประมง 70,673 ล้านบาท</strong></td>
+          <td>ยืนยันสถานะ Net Exporter — ไทยมีความสามารถในการแข่งขันสูง</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-blue">IN-2</span></td>
+          <td>Product</td>
+          <td><strong>ปลาทูน่า Skipjack = สินค้าส่งออกอันดับ 1</strong><br>Top 5 = 54.1% ของ Export</td>
+          <td>อุตสาหกรรมทูน่ากระป๋องเป็นหัวใจ — ต้องรักษาและต่อยอด</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-orange">IN-3</span></td>
+          <td>Product</td>
+          <td><strong>กุ้ง Vannamei = สินค้านำเข้าอันดับ 1</strong></td>
+          <td>โรงงานแปรรูปพึ่งพา Import วัตถุดิบ — ความเสี่ยง Supply Chain</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-yellow">IN-4</span></td>
+          <td>Product</td>
+          <td><strong>สินค้าแปรรูป = Net Export สูง</strong><br>สัตว์น้ำสดบางชนิด = Net Import</td>
+          <td>ไทยเพิ่ม Value Added ก่อนส่งออก — ดีกว่าส่งออกแบบ Raw</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-green">IN-5</span></td>
+          <td>Country</td>
+          <td><strong>สหรัฐฯ = ตลาดส่งออกอันดับ 1</strong><br>ส่งออกไป 180+ ประเทศ</td>
+          <td>กระจายความเสี่ยงดี แต่ต้องระวัง Trade Policy ของ US</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-red">IN-6</span></td>
+          <td>Country</td>
+          <td><strong>จีน = แหล่งนำเข้าอันดับ 1</strong><br>Top 5 = 42.8%</td>
+          <td>Import กระจุกตัว — เสี่ยงหาก Supply Chain หยุดชะงัก</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-cyan">IN-7</span></td>
+          <td>Seasonal</td>
+          <td><strong>ต.ค. = Peak การค้า (33,419 ล้านบาท)</strong></td>
+          <td>ทะเลสงบ + วัตถุดิบพร้อม + ตลาดโลก Q4 = Triple Peak Factor</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-cyan">IN-8</span></td>
+          <td>Seasonal</td>
+          <td><strong>ส.ค. = Low การค้า (28,319 ล้านบาท)</strong></td>
+          <td>อันดามันมรสุม + รอวัตถุดิบรอบใหม่ = ธรรมชาติ Supply ลด</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-red">IN-9</span></td>
+          <td>Data</td>
+          <td><strong>Garbage 38.8% ใน Raw Data</strong></td>
+          <td>ตัวเลขมูลค่าที่วิเคราะห์ต่ำกว่าความเป็นจริง — ETL ต้องแก้</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-yellow">IN-10</span></td>
+          <td>Limit</td>
+          <td><strong>ข้อมูล 1 ปี (2568) เท่านั้น</strong></td>
+          <td>ไม่สามารถยืนยัน YoY Trend — ต้องขอข้อมูลย้อนหลัง 3-5 ปี</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION F: LESSONS LEARNED -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">PART 05</span>
+    <span class="section-title">Lessons Learned — บทเรียนสำคัญ</span>
+  </div>
+
+  <div class="principle-grid">
+    <div class="principle">
+      <div class="icon">🧭</div>
+      <div class="ptitle">Data Cleaning ≠ Data Deleting</div>
+      <div class="pbody">Cleaning คือการทำให้ข้อมูลน่าเชื่อถือ ไม่ใช่แค่ลบแถวที่ "ดูผิดปกติ" การเข้าใจที่มาของข้อมูลช่วยรักษาข้อมูลได้มากกว่า</div>
+    </div>
+    <div class="principle">
+      <div class="icon">🔬</div>
+      <div class="ptitle">EDA = Journalism</div>
+      <div class="pbody">ตั้งคำถาม → หาหลักฐาน → ตรวจสอบสมมติฐาน → สรุปผล วิธีคิดเหมือนนักข่าวสืบสวน ไม่ใช่แค่รัน Code</div>
+    </div>
+    <div class="principle">
+      <div class="icon">⚡</div>
+      <div class="ptitle">Domain Knowledge สำคัญเท่า Code</div>
+      <div class="pbody">รู้ว่า ต.ค. คือฤดูทะเลสงบในอ่าวไทย ทำให้ตีความ Peak ได้ถูกต้อง Code อย่างเดียวบอกแค่ตัวเลข</div>
+    </div>
+    <div class="principle">
+      <div class="icon">🎯</div>
+      <div class="ptitle">ตัวเลข 38.8% บอกอะไร?</div>
+      <div class="pbody">Garbage 38% ไม่ใช่แค่ปัญหาข้อมูล แต่บ่งชี้ปัญหาใน ETL Pipeline ที่ต้นทาง การแก้ต้นเหตุดีกว่าแก้ปลายเหตุทุกครั้ง</div>
+    </div>
+    <div class="principle">
+      <div class="icon">📐</div>
+      <div class="ptitle">Iterative ดีกว่า Linear</div>
+      <div class="pbody">พบ (blank) ใน Section 2 → กลับไปแก้ใน Section 3 → ตรวจสอบอีกครั้ง กระบวนการวนซ้ำให้ผลดีกว่าทำครั้งเดียว</div>
+    </div>
+    <div class="principle">
+      <div class="icon">📣</div>
+      <div class="ptitle">Insight ไม่มีค่าถ้าไม่นำไปใช้</div>
+      <div class="pbody">ทุก Insight ต้องตอบ "So what?" และ "Now what?" ถึงจะมีคุณค่าต่อองค์กร Data สำหรับ Data เฉยๆ ไม่ใช่ Data Science</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end container -->
+
+<div class="footer">
+  MiniHack 1 — Thailand Fisheries Import-Export Analysis 2568 &nbsp;|&nbsp;
+  607745 ธวัช มหิทธิ &nbsp;|&nbsp;
+  Python / Pandas / Matplotlib / Seaborn
+</div>
+
+</body>
+</html>
